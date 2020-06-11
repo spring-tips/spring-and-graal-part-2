@@ -38,7 +38,6 @@ public class TraditionalMongoApplication {
 
 }
 
-
 @Component
 @RequiredArgsConstructor
 class Initializer implements ApplicationListener<ApplicationReadyEvent> {

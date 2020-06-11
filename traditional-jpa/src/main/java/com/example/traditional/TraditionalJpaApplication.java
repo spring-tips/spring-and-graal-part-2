@@ -10,12 +10,14 @@ import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfigur
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.stream.Stream;
 
 import static org.springframework.web.servlet.function.RouterFunctions.route;
@@ -23,10 +25,10 @@ import static org.springframework.web.servlet.function.RouterFunctions.route;
 @SpringBootApplication(
         proxyBeanMethods = false,
         exclude = SpringDataWebAutoConfiguration.class)
-public class TraditionalMongoApplication {
+public class TraditionalJpaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TraditionalMongoApplication.class, args);
+        SpringApplication.run(TraditionalJpaApplication.class, args);
     }
 
     @Bean
@@ -37,7 +39,6 @@ public class TraditionalMongoApplication {
     }
 
 }
-
 
 @Component
 @RequiredArgsConstructor
@@ -56,15 +57,18 @@ class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     }
 }
 
-interface CustomerRepository extends MongoRepository<Customer, String> {
+
+interface CustomerRepository extends JpaRepository<Customer, Integer> {
 }
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Data
 class Customer {
 
     @Id
-    private String id;
+    @GeneratedValue
+    private Integer id;
     private String name;
 }

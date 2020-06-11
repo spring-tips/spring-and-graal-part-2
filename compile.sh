@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-ARTIFACT=${1:-spring-data-mongodb}
-MAINCLASS=${2:-com.example.data.mongo.MongoApplication}
-VERSION=${3:-0.0.1-SNAPSHOT}
+ARTIFACT=${1}
+MAINCLASS=${2}
+VERSION=${3}
 echo $ARTIFACT
 echo $MAINCLASS
 echo $VERSION
