@@ -6,19 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
-
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -47,15 +41,18 @@ class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     @Override
     @SneakyThrows
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        try (Reader cpr = new InputStreamReader(
-                new FileSystemResource(
-                    new File("/Users/jlong/Desktop/spring-and-graal-part-2/reactive/src/main/resources/schema.sql")).getInputStream())) {
-            String sql = FileCopyUtils.copyToString(cpr);
-            this.client
-                    .execute(sql).fetch().rowsUpdated()
-                    .thenMany(Flux.just("A", "B", "C").map(name -> new Customer(null, name)).flatMap(this.customerRepository::save))
-                    .subscribe(System.out::println);
-        }
+
+
+        String sql = "create table customer\n" +
+                "(\n" +
+                "    id   serial       not null primary key,\n" +
+                "    name varchar(255) not null\n" +
+                ");";
+        this.client
+                .execute(sql).fetch().rowsUpdated()
+                .thenMany(Flux.just("A", "B", "C").map(name -> new Customer(null, name)).flatMap(this.customerRepository::save))
+                .subscribe(System.out::println);
+
     }
 }
 

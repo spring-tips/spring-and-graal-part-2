@@ -3,9 +3,7 @@
 ARTIFACT=${1}
 MAINCLASS=${2}
 VERSION=${3}
-echo $ARTIFACT
-echo $MAINCLASS
-echo $VERSION
+
 JAR="${ARTIFACT}-${VERSION}.jar"
 
 rm -rf target
@@ -26,10 +24,9 @@ time native-image \
   -H:+RemoveSaturatedTypeFlows \
   -H:Name=$ARTIFACT \
   -Dspring.native.verbose=true \
-  -Dspring.native.remove-xml-support=true \
   -Dspring.native.remove-jmx-support=true \
   -Dspring.native.remove-spel-support=true \
   -Dspring.native.remove-yaml-support=true \
   -cp $CP $MAINCLASS  
 
-  # 
+ # -Dspring.native.remove-xml-support=true \
