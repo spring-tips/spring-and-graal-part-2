@@ -6,32 +6,33 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.util.stream.Stream;
 
 import static org.springframework.web.servlet.function.RouterFunctions.route;
 
-@SpringBootApplication(proxyBeanMethods = false)
-public class TraditionalApplication {
+@SpringBootApplication(
+        proxyBeanMethods = false,
+        exclude = SpringDataWebAutoConfiguration.class)
+public class TraditionalMongoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TraditionalApplication.class, args);
+        SpringApplication.run(TraditionalMongoApplication.class, args);
     }
 
     @Bean
-    RouterFunction<ServerResponse> http(CustomerRepository customerRepository) {
+    RouterFunction<ServerResponse> http(CustomerRepository repository) {
         return route()
-                .GET("/customers", r -> ServerResponse.ok().body(customerRepository.findAll()))
+                .GET("/customers", r -> ServerResponse.ok().body(repository.findAll()))
                 .build();
     }
 
@@ -55,18 +56,15 @@ class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     }
 }
 
-interface CustomerRepository extends JpaRepository<Customer, Integer> {
+interface CustomerRepository extends MongoRepository<Customer, String> {
 }
 
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 class Customer {
 
     @Id
-    @GeneratedValue
-    private Integer id;
-
+    private String id;
     private String name;
 }
