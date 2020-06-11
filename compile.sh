@@ -6,7 +6,7 @@ VERSION=${3:-0.0.1-SNAPSHOT}
 echo $ARTIFACT
 echo $MAINCLASS
 echo $VERSION
-JAR="$ARTIFACT-$VERSION.jar"
+JAR="${ARTIFACT}-${VERSION}.jar"
 
 rm -rf target
 mkdir -p target/native-image
@@ -25,6 +25,7 @@ time native-image \
   -H:EnableURLProtocols=http \
   -H:+RemoveSaturatedTypeFlows \
   -H:Name=$ARTIFACT \
+  -Dspring.native.remove-xml-support=true \
   -Dspring.native.remove-xml-support=true \
   -Dspring.native.remove-spel-support=true \
   -Dspring.native.remove-yaml-support=true \
