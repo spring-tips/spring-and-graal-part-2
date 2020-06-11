@@ -25,6 +25,7 @@ time native-image \
   -H:EnableURLProtocols=http \
   -H:+RemoveSaturatedTypeFlows \
   -H:Name=$ARTIFACT \
+  -Dspring.native.verbose=true \
   -Dspring.native.remove-xml-support=true \
   -Dspring.native.remove-jmx-support=true \
   -Dspring.native.remove-spel-support=true \
