@@ -23,9 +23,11 @@ GRAALVM_VERSION=`native-image --version`
 time native-image \
   --verbose \
   -H:EnableURLProtocols=http \
+  -H:+RemoveSaturatedTypeFlows \
   -H:Name=$ARTIFACT \
   -Dspring.native.remove-xml-support=true \
-  -Dspring.native.remove-jmx-support=true \
   -Dspring.native.remove-spel-support=true \
   -Dspring.native.remove-yaml-support=true \
   -cp $CP $MAINCLASS  
+
+  # -Dspring.native.remove-jmx-support=true \

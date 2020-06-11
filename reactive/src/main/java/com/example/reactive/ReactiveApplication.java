@@ -48,7 +48,8 @@ class Initializer implements ApplicationListener<ApplicationReadyEvent> {
     @SneakyThrows
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         try (Reader cpr = new InputStreamReader(
-                new FileSystemResource(new File("/Users/jlong/Downloads/reactive-example/src/main/resources/schema.sql")).getInputStream())) {
+                new FileSystemResource(
+                    new File("/Users/jlong/Desktop/spring-and-graal-part-2/reactive/src/main/resources/schema.sql")).getInputStream())) {
             String sql = FileCopyUtils.copyToString(cpr);
             this.client
                     .execute(sql).fetch().rowsUpdated()
