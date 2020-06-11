@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
-
-mvn clean package && ../compile.sh reactive 0.0.1-SNAPSHOT  com.example.reactive.ReactiveApplication
+mvn -DskipTests=true clean package && ../compile.sh reactive com.example.reactive.ReactiveApplication 0.0.1-SNAPSHOT
 

@@ -1,3 +1,2 @@
 #!/usr/bin/env bash
-mvn clean package &&  ../compile.sh traditional 0.0.1-SNAPSHOT com.example.traditional.TraditionalApplication
-
+mvn -DskipTests=true clean package && ../compile.sh traditional com.example.traditional.TraditionalApplication 0.0.1-SNAPSHOT
