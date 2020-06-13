@@ -7,69 +7,49 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.function.RouterFunction;
-import org.springframework.web.servlet.function.ServerResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.stream.Stream;
-
-import static org.springframework.web.servlet.function.RouterFunctions.route;
+import java.util.Collection;
 
 @SpringBootApplication(
-        proxyBeanMethods = false,
-        exclude = SpringDataWebAutoConfiguration.class)
+    proxyBeanMethods = false,
+    exclude = SpringDataWebAutoConfiguration.class
+)
 public class TraditionalJpaApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TraditionalJpaApplication.class, args);
     }
-
-    @Bean
-    RouterFunction<ServerResponse> http(CustomerRepository repository) {
-        return route()
-                .GET("/customers", r -> ServerResponse.ok().body(repository.findAll()))
-                .build();
-    }
-
 }
 
-@Component
+@RestController
 @RequiredArgsConstructor
-class Initializer implements ApplicationListener<ApplicationReadyEvent> {
+class CustomerRestController {
 
-    private final CustomerRepository repository;
+    private final CustomerRepository customerRepository;
 
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-
-        Stream
-                .of("A", "B", "C")
-                .map(name -> new Customer(null, name))
-                .map(this.repository::save)
-                .forEach(System.out::println);
+    @GetMapping("/customers")
+    Collection<Customer> all() {
+        return this.customerRepository.findAll();
     }
 }
-
 
 interface CustomerRepository extends JpaRepository<Customer, Integer> {
 }
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
     private String name;
 }
