@@ -1,5 +1,5 @@
-create table customer
+create table CUSTOMER
 (
-    id   serial       not null primary key,
+    id   serial primary key,
     name varchar(255) not null
 );
