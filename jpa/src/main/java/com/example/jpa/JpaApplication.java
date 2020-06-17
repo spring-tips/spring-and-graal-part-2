@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,30 +23,16 @@ import java.util.stream.Stream;
 
 @SpringBootApplication(
         exclude = SpringDataWebAutoConfiguration.class,
-        proxyBeanMethods = false)
+        proxyBeanMethods = false
+)
 public class JpaApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(JpaApplication.class, args);
     }
+
 }
 
-@Component
-@RequiredArgsConstructor
-class CustomerInitializer implements ApplicationListener<ApplicationReadyEvent> {
-
-    private final CustomerRepository customerRepository;
-
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent are) {
-        Stream
-                .of("Violetta", "Madhura")
-                .map(name -> new Customer(null, name))
-                .map(this.customerRepository::save)
-                .forEach(System.out::println);
-
-    }
-}
 
 @RestController
 @RequiredArgsConstructor
@@ -59,7 +46,23 @@ class CustomerRestController {
     }
 }
 
+@Component
+@RequiredArgsConstructor
+class Initializer implements ApplicationListener<ApplicationReadyEvent> {
+
+    private final CustomerRepository customerRepository;
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        Stream.of("Madhura", "Dr. Syer")
+                .map(name -> new Customer(null, name))
+                .map(this.customerRepository::save)
+                .forEach(System.out::println);
+    }
+}
+
 interface CustomerRepository extends JpaRepository<Customer, Integer> {
+
 }
 
 @Entity
@@ -72,4 +75,5 @@ class Customer {
     @GeneratedValue
     private Integer id;
     private String name;
+
 }
