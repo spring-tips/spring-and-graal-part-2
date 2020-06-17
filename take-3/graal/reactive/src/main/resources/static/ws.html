@@ -1,0 +1,10 @@
+<html>
+<body>
+<script>
+    window.addEventListener('load', () => {
+        const ws = new WebSocket('ws://localhost:8080/ws/greetings')
+        ws.addEventListener('message', (message) => console.log(message.data))
+    })
+</script>
+</body>
+</html>
